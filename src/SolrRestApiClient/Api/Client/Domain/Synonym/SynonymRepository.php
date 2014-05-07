@@ -104,11 +104,45 @@ class SynonymRepository {
 	}
 
 	/**
+	 * @param SynonymDataMapper $dataMapper
+	 */
+	public function injectDataMapper(SynonymDataMapper $dataMapper) {
+		$this->dataMapper = $dataMapper;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBaseUrl() {
+		return 'http://'.$this->hostName.':'.$this->port.'/';
+	}
+
+
+	/**
+	 * @param $tag
+	 * @param null $body
+	 * @param array $options
+	 * @return \Guzzle\Http\Message\Response
+	 */
+	protected function executePostRequest($tag, $body = null,$options = array()) {
+		$synonymEndpoint = $this->corePath. $this->restEndPointPath. $tag;
+		$response = $this->restClient->setBaseUrl( $this->getBaseUrl() )
+			->post($synonymEndpoint,array('Content-type' =>'application/json'), $body, $options)
+			->send();
+
+		return $response;
+	}
+
+
+	/**
 	 * @param SynonymCollection $synonyms
 	 * @param string $tag
 	 */
 	public function addAll(SynonymCollection $synonyms, $tag) {
 		$json = $this->dataMapper->toJson($synonyms);
+		$response = $this->executePostRequest($tag, $json);
+
+		return $response->getStatusCode() == 200;
 	}
 
 }

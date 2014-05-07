@@ -28,6 +28,7 @@ class SynonymDataMapper implements JsonDataMapperInterface {
 	 */
 	public function toJson(SynonymCollection $synonymCollection) {
 		$result =  new \StdClass();
+
 		foreach($synonymCollection as $synonym) {
 				/** @var $synonym Synonym */
 			$mainWord = $synonym->getMainWord();

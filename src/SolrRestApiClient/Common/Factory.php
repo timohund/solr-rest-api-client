@@ -23,7 +23,9 @@ class Factory {
 		$synonymRepository->setPort($port);
 		$synonymRepository->setCorePath($corePath);
 		$synonymRepository->injectRestClient($guzzle);
+		$synonymRepository->injectDataMapper($dataMapper);
 
+		return $synonymRepository;
 	}
 
 	/**
@@ -36,9 +38,6 @@ class Factory {
 			'redirect.disable' => true
 		));
 
-
 		return $guzzle;
 	}
-
-
 }
