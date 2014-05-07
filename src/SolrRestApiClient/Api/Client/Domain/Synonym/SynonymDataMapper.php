@@ -17,7 +17,29 @@ class SynonymDataMapper implements JsonDataMapperInterface {
 	 * @return SynonymCollection
 	 */
 	public function fromJson($json) {
+		$synonymCollection      = new SynonymCollection();
+		$object                 = json_decode($json);
 
+		if( !is_object($object) ||
+			!isset($object->synonymMappings->managedMap) ||
+			!is_object($object->synonymMappings->managedMap)) {
+			return $synonymCollection;
+		}
+
+		$mapping = $object->synonymMappings->managedMap;
+		foreach($mapping as $mainWord => $wordsWithSameMeaning) {
+			$synonym = new Synonym();
+			$synonym->setMainWord($mainWord);
+
+			if(!is_array($wordsWithSameMeaning)) { continue; }
+			foreach($wordsWithSameMeaning as $wordWithSameMeaning) {
+				$synonym->addWordsWithSameMeaning($wordWithSameMeaning);
+			}
+
+			$synonymCollection->append($synonym);
+		}
+
+		return $synonymCollection;
 	}
 
 	/**

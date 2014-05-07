@@ -2,4 +2,4 @@
 
 namespace SolrRestApiClient\Api\Client\Domain\Synonym;
 
-class SynonymCollection extends \SplObjectStorage {}
+class SynonymCollection extends \ArrayObject {}
