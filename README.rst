@@ -32,7 +32,10 @@ to maintain the entities in solr.
 
     $result = $repository->addAll($synonymCollection,'mysynonymtag');
 
-::
+
+Synonyms
+======================
+
 
 
 .. |buildStatusIcon| image:: https://secure.travis-ci.org/timoschmidt/solr-rest-api-client.png?branch=master
