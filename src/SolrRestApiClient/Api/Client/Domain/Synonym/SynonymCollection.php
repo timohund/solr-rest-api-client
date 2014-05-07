@@ -1,7 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: timoschmidt
- * Date: 07.05.14
- * Time: 14:36
- */ 
+
+namespace SolrRestApiClient\Api\Client\Domain\Synonym;
+
+class SynonymCollection extends \SplObjectStorage {}

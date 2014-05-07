@@ -33,6 +33,20 @@ class Synonym {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getWordsWithSameMeaning() {
+		return $this->wordsWithSameMeaning;
+	}
+
+	/**
+	 * @param array $wordsWithSameMeaning
+	 */
+	public function setWordsWithSameMeaning($wordsWithSameMeaning) {
+		$this->wordsWithSameMeaning = $wordsWithSameMeaning;
+	}
+
+	/**
 	 * @param string $mainWord
 	 */
 	public function setMainWord($mainWord) {
