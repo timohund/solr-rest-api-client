@@ -2,7 +2,9 @@
 
 namespace SolrRestApiClient\Tests\Api\Client\Domain\Synonym;
 
-class SynonymDataMapperTestCase {
+use SolrRestApiClient\Tests\BaseTestCase;
+
+class SynonymDataMapperTestCase extends BaseTestCase {
 
 	/**
 	 * @test
