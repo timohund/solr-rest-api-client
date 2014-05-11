@@ -2,7 +2,12 @@
 
 namespace SolrRestApiClient\Api\Client\Domain\Synonym;
 
-
+/**
+ * Class Synonym
+ *
+ * @author Timo Schmidt <timo.schmidt@aoe.com>
+ * @package SolrRestApiClient\Api\Client\Domain\Synonym
+ */
 class Synonym {
 
 	/**
@@ -23,7 +28,6 @@ class Synonym {
 	 * @var string
 	 */
 	protected $tag = '';
-
 
 	/**
 	 * @param string $word

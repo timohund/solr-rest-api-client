@@ -6,9 +6,12 @@ use SolrRestApiClient\Api\Client\Domain\JsonDataMapperInterface;
 use SolrRestApiClient\Api\Client\Domain\Synonym\SynonymCollection;
 
 /**
+ * Class SynonymDataMapper
+ *
  * Reconstitutes the json response to a synonym object.
  *
  * @author Timo Schmidt <timo.schmidt@aoe.com>
+ * @package SolrRestApiClient\Api\Client\Domain\Synonym
  */
 class SynonymDataMapper implements JsonDataMapperInterface {
 
@@ -36,7 +39,7 @@ class SynonymDataMapper implements JsonDataMapperInterface {
 				$synonym->addWordsWithSameMeaning($wordWithSameMeaning);
 			}
 
-			$synonymCollection->append($synonym);
+			$synonymCollection->add($synonym);
 		}
 
 		return $synonymCollection;

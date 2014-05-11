@@ -30,7 +30,7 @@ class SynonymDataMapperTestCase extends BaseTestCase {
 		$synonym = new Synonym();
 		$synonym->setMainWord("lucky");
 		$synonym->addWordsWithSameMeaning("happy");
-		$synonymCollection->append($synonym);
+		$synonymCollection->add($synonym);
 
 		$this->assertEquals(1, $synonymCollection->count());
 		$expectedJson = '{"lucky":["happy"]}';

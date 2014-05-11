@@ -1,7 +1,28 @@
 <?php
+
+namespace SolrRestApiClient\Api\Client\Domain\StopWord;
+use SolrRestApiClient\Api\Client\Domain\AbstractCollection;
+
 /**
- * Created by PhpStorm.
- * User: timoschmidt
- * Date: 07.05.14
- * Time: 14:37
- */ 
+ * Class StopWordCollection
+ *
+ * @author Timo Schmidt <timo.schmidt@aoe.com>
+ * @package SolrRestApiClient\Api\Client\Domain\StopWord
+ */
+class StopWordCollection extends AbstractCollection {
+
+	/**
+	 * @param StopWord $stopWord
+	 */
+	public function add(StopWord $stopWord) {
+		$this->data->append($stopWord);
+	}
+
+	/**
+	 * @param $index
+	 * @return mixed
+	 */
+	public function getByIndex($index) {
+		return $this->data->offsetGet($index);
+	}
+}

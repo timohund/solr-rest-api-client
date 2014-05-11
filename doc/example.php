@@ -12,6 +12,6 @@ $synonym->setMainWord('foo');
 $synonym->addWordsWithSameMeaning('bar');
 $synonym->addWordsWithSameMeaning('bla');
 
-$synonymCollection->attach($synonym);
+$synonymCollection->add($synonym);
 
 $result = $repository->addAll($synonymCollection,'mysynonymtag');
