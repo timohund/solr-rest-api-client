@@ -32,4 +32,18 @@ abstract class AbstractCollection implements \IteratorAggregate {
 	public function getIterator() {
 		return $this->data->getIterator();
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getCount() {
+		return $this->data->count();
+	}
+
+	/**
+	 * @return array
+	 */
+	public function toArray() {
+		return $this->data->getArrayCopy();
+	}
 }

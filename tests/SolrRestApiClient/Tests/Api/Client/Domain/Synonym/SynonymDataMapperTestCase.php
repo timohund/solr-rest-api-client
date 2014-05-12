@@ -32,7 +32,7 @@ class SynonymDataMapperTestCase extends BaseTestCase {
 		$synonym->addWordsWithSameMeaning("happy");
 		$synonymCollection->add($synonym);
 
-		$this->assertEquals(1, $synonymCollection->count());
+		$this->assertEquals(1, $synonymCollection->getCount());
 		$expectedJson = '{"lucky":["happy"]}';
 		$json = $this->dataMapper->toJson($synonymCollection);
 
@@ -60,10 +60,10 @@ class SynonymDataMapperTestCase extends BaseTestCase {
          }';
 
 		$synonymCollection = $this->dataMapper->fromJson($input);
-		$this->assertEquals(2, $synonymCollection->count(),'Unexpected amount of synonyms after reconstitution.');
+		$this->assertEquals(2, $synonymCollection->getCount(),'Unexpected amount of synonyms after reconstitution.');
 
 			/** @var $first Synonym  */
-		$first = $synonymCollection->offsetGet(0);
+		$first = $synonymCollection->getByIndex(0);
 		$this->assertEquals(array("bar" => "bar","bla" => "bla"), $first->getWordsWithSameMeaning(),'Could not create solr synonym collection from rest api response');
 	}
 }

@@ -3,7 +3,7 @@
 namespace SolrRestApiClient\Api\Client\Domain\Synonym;
 
 use SolrRestApiClient\Api\Client\Domain\JsonDataMapperInterface;
-use SolrRestApiClient\Api\Client\Domain\Synonym\SynonymCollection;
+use SolrRestApiClient\Api\Client\Domain\StopWord\StopWordCollection;
 
 /**
  * Class StopWordDataMapper
@@ -23,9 +23,18 @@ class StopWordDataMapper implements JsonDataMapperInterface {
 	}
 
 	/**
+	 * @param StopWordCollection $stopWordCollection
 	 * @return string
 	 */
-	public function toJson($object) {
-		// TODO: Implement toJson() method.
+	public function toJson($stopWordCollection) {
+		$result = array();
+
+		/** @var $stopWordCollection StopWordCollection */
+		foreach($stopWordCollection as $stopWord) {
+			/** @var $stopWord StopWord */
+			$result[] = $stopWord->getWord();
+		}
+
+		return json_encode($result);
 	}
 }

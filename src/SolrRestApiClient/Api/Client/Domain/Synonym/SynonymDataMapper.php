@@ -51,7 +51,7 @@ class SynonymDataMapper implements JsonDataMapperInterface {
 	 * @param SynonymCollection $synonymCollection
 	 * @return string
 	 */
-	public function toJson(SynonymCollection $synonymCollection) {
+	public function toJson($synonymCollection) {
 		$result =  new \StdClass();
 
 		foreach($synonymCollection as $synonym) {
