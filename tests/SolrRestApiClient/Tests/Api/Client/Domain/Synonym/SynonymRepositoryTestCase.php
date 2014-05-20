@@ -139,12 +139,18 @@ class SynonymRepositoryTestCase extends BaseTestCase {
 	 * @test
 	 */
 	public function canDeleteByMainWord() {
-
 		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody'), array(),'',false);
 		$this->synonymRepository->expects($this->once())->method('executeDeleteRequest')->with("it","test")->will(
 			$this->returnValue($responseMock)
 		);
 		$this->synonymRepository->deleteByMainWord('test',"it");
+	}
+
+	/**
+	 * @test
+	 */
+	public function canDeleteAll() {
+		$this->markTestIncomplete("todo");
 	}
 
 }
