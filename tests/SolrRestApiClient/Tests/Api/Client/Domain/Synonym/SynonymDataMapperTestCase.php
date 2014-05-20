@@ -10,33 +10,43 @@ use SolrRestApiClient\Tests\BaseTestCase;
 class SynonymDataMapperTestCase extends BaseTestCase {
 
 	/**
+	 * @var string
+	 */
+	protected $host = 'localhost';
+
+	/**
+	 * @var int
+	 */
+	protected $port = 8080;
+
+	/**
+	 * @var string
+	 */
+	protected $corePath = 'solr/saascluster-qvc-it-devbox/';
+
+	/**
 	 * @var SynonymDataMapper
 	 */
 	protected $dataMapper = null;
 
 	/**
+	 * @var \SolrRestApiClient\Api\Client\Domain\Synonym\SynonymRepository()
+	 */
+	protected $synonymRepository;
+
+	/**
 	 * @return void
 	 */
 	public function setUp() {
+		$factory = new \SolrRestApiClient\Common\Factory();
 		$this->dataMapper = new SynonymDataMapper();
+		$this->synonymRepository = $factory->getSynonymRepository($this->host, $this->port, $this->corePath);
 	}
 
 	/**
-	 * @test
+	 * @return void
 	 */
-	public function canBuildJsonFromSynonymCollection() {
-		$synonymCollection = new SynonymCollection();
-
-		$synonym = new Synonym();
-		$synonym->setMainWord("lucky");
-		$synonym->addWordsWithSameMeaning("happy");
-		$synonymCollection->add($synonym);
-
-		$this->assertEquals(1, $synonymCollection->getCount());
-		$expectedJson = '{"lucky":["happy"]}';
-		$json = $this->dataMapper->toJson($synonymCollection);
-
-		$this->assertEquals($expectedJson, $json);
+	public function tearDown() {
 	}
 
 	/**
@@ -65,5 +75,30 @@ class SynonymDataMapperTestCase extends BaseTestCase {
 			/** @var $first Synonym  */
 		$first = $synonymCollection->getByIndex(0);
 		$this->assertEquals(array("bar" => "bar","bla" => "bla"), $first->getWordsWithSameMeaning(),'Could not create solr synonym collection from rest api response');
+	}
+
+	/**
+	 * @test
+	 */
+	public function canBuildSynonymCollectionFromJsonAfterSearchByMainWord() {
+		$input = '{
+				   "responseHeader":
+				   {
+					   "status": 0,
+					   "QTime": 3
+				   },
+				   "foo":
+				   [
+					   "bar",
+					   "bla"
+				   ]
+    			}';
+
+		$synonymCollection = $this->dataMapper->fromJsonToMainWordCollection($input, "foo");
+		$this->assertEquals(1, $synonymCollection->getCount(), 'Unexpected amount of synonyms after reconstitution.');
+
+		/** @var $first Synonym */
+		$first = $synonymCollection->getByIndex(0);
+		$this->assertEquals(array("bar" => "bar", "bla" => "bla"), $first->getWordsWithSameMeaning(), 'Could not create solr synonym collection from rest api response');
 	}
 }

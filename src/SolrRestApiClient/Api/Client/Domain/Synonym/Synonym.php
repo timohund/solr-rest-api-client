@@ -30,6 +30,20 @@ class Synonym {
 	protected $tag = '';
 
 	/**
+	 * @param string $tag
+	 */
+	public function setTag($tag) {
+		$this->tag = $tag;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTag() {
+		return $this->tag;
+	}
+
+	/**
 	 * @param string $word
 	 */
 	public function addWordsWithSameMeaning($word) {

@@ -1,10 +1,10 @@
 <?php
 
-namespace SolrRestApiClient\Api\Client\Domain\Synonym;
+namespace SolrRestApiClient\Api\Client\Domain\StopWord;
 use SolrRestApiClient\Api\Client\Domain\AbstractRepository;
 
 /**
- * Repository to handle stopwords in solr using the RestAPI
+ * Repository to handle StopWord in solr using the RestAPI
  *
  * @author Timo Schmidt <timo.schmidt@aoe.com>
  */
@@ -16,20 +16,22 @@ class StopWordRepository extends AbstractRepository {
 	protected $restEndPointPath = 'schema/analysis/stopwords/';
 
 	/**
-	 * @param SynonymDataMapper $dataMapper
+	 * @param StopWordDataMapper $dataMapper
 	 */
-	public function injectDataMapper(SynonymDataMapper $dataMapper) {
+	public function injectDataMapper(StopWordDataMapper $dataMapper) {
 		$this->dataMapper = $dataMapper;
 	}
 
 	/**
 	 * @param StopWordCollection $stopWords
-	 * @param string $tag
+	 * @param $tag
+	 * @return bool
 	 */
 	public function addAll(StopWordCollection $stopWords, $tag) {
 		$json = $this->dataMapper->toJson($stopWords);
 		$response = $this->executePostRequest($tag, $json);
 
-		return $response->getStatusCode() == 200;
+		return $response;
+		//return $response->getStatusCode() == 200;
 	}
 }
