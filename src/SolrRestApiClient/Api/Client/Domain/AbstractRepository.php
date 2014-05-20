@@ -154,6 +154,7 @@ abstract class AbstractRepository {
 		if(trim($mainWord) != '') {
 			$endpoint = $endpoint . '/' .$mainWord;
 		}
+
 		$response = $this->restClient->get($endpoint, $this->headers, $options)->send();
 
 		return $response;
@@ -168,6 +169,7 @@ abstract class AbstractRepository {
 	protected function executeDeleteRequest($tag, $synonym, $options = array()) {
 		$endpoint = $this->getEndpoint($tag) . '/' . $synonym;
 		$response = $this->restClient->delete($endpoint, $this->headers, $options)->send();
+
 		return $response;
 	}
 }
