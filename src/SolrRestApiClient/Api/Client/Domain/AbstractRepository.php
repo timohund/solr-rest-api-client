@@ -36,6 +36,11 @@ abstract class AbstractRepository {
 	protected $corePath = 'solr/';
 
 	/**
+	 * @var array
+	 */
+	protected $headers = array('Content-type' => 'application/json');
+
+	/**
 	 * @var string
 	 */
 	protected $restEndPointPath  = '';
@@ -112,17 +117,56 @@ abstract class AbstractRepository {
 	}
 
 	/**
+	 * @param string $tag
+	 * @return string
+	 */
+	protected function getEndpoint($tag) {
+		return $this->corePath . $this->restEndPointPath . $tag;
+	}
+
+	/**
+	 * @return void
+	 */
+	public function setRestClientBaseUrl() {
+		$this->restClient->setBaseUrl($this->getBaseUrl());
+	}
+
+	/**
 	 * @param $tag
 	 * @param null $body
 	 * @param array $options
 	 * @return \Guzzle\Http\Message\Response
 	 */
-	protected function executePostRequest($tag, $body = null,$options = array()) {
-		$synonymEndpoint = $this->corePath. $this->restEndPointPath. $tag;
-		$response = $this->restClient->setBaseUrl( $this->getBaseUrl() )
-			->post($synonymEndpoint,array('Content-type' =>'application/json'), $body, $options)
-			->send();
+	protected function executePostRequest($tag, $body = null, $options = array()) {
+		$endpoint = $this->getEndpoint($tag);
+		$response = $this->restClient->post($endpoint, $this->headers, $body, $options)->send();
+		return $response;
+	}
 
+	/**
+	 * @param string $tag
+	 * @param string $mainWord
+	 * @param array $options
+	 * @return \Guzzle\Http\Message\Response
+	 */
+	protected function executeGetRequest($tag, $mainWord = '', $options = array()) {
+		$endpoint = $this->getEndpoint($tag);
+		if(trim($mainWord) != '') {
+			$endpoint = $endpoint . '/' .$mainWord;
+		}
+		$response = $this->restClient->get($endpoint, $this->headers, $options)->send();
+		return $response;
+	}
+
+	/**
+	 * @param string $tag
+	 * @param string $synonym
+	 * @param array $options
+	 * @return \Guzzle\Http\Message\Response
+	 */
+	protected function executeDeleteRequest($tag, $synonym, $options = array()) {
+		$endpoint = $this->getEndpoint($tag) . '/' . $synonym;
+		$response = $this->restClient->delete($endpoint, $this->headers, $options)->send();
 		return $response;
 	}
 }

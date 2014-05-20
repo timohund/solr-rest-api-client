@@ -17,15 +17,14 @@ class SynonymDataMapper implements JsonDataMapperInterface {
 
 	/**
 	 * @param string $json
-	 * @return SynonymCollection
+	 * @param string $mainWord
+	 * @return SynonymCollection $synonymCollection
 	 */
-	public function fromJson($json) {
+	public function fromJson($json, $mainWord = '') {
 		$synonymCollection      = new SynonymCollection();
 		$object                 = json_decode($json);
 
-		if( !is_object($object) ||
-			!isset($object->synonymMappings->managedMap) ||
-			!is_object($object->synonymMappings->managedMap)) {
+		if( !is_object($object) || !isset($object->synonymMappings->managedMap) || !is_object($object->synonymMappings->managedMap)) {
 			return $synonymCollection;
 		}
 
@@ -38,10 +37,8 @@ class SynonymDataMapper implements JsonDataMapperInterface {
 			foreach($wordsWithSameMeaning as $wordWithSameMeaning) {
 				$synonym->addWordsWithSameMeaning($wordWithSameMeaning);
 			}
-
 			$synonymCollection->add($synonym);
 		}
-
 		return $synonymCollection;
 	}
 
@@ -59,7 +56,34 @@ class SynonymDataMapper implements JsonDataMapperInterface {
 			$mainWord = $synonym->getMainWord();
 			$result->$mainWord = array_values($synonym->getWordsWithSameMeaning());
 		}
-
 		return json_encode($result);
+	}
+
+	/**
+	 * Convert from json returned by solr restAPI from searching by synonym word
+	 *
+	 * @param string $json
+	 * @param string $mainWord
+	 * @param string $tag
+	 * @return SynonymCollection
+	 */
+	public function fromJsonToMainWordCollection($json, $mainWord = '', $tag = '') {
+		$synonymCollection = new SynonymCollection();
+		$object = json_decode($json);
+
+		if (!is_object($object) || !isset($object->$mainWord) || count($object->$mainWord) == 0) {
+			return $synonymCollection;
+		}
+
+		$synonym = new Synonym();
+		$synonym->setMainWord($mainWord);
+		$synonym->setTag($tag);
+
+		foreach ($object->$mainWord as $wordWithSameMeaning) {
+			$synonym->addWordsWithSameMeaning($wordWithSameMeaning);
+		}
+		$synonymCollection->add($synonym);
+
+		return $synonymCollection;
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace SolrRestApiClient\Api\Client\Domain\Synonym;
+namespace SolrRestApiClient\Api\Client\Domain\StopWord;
 
 use SolrRestApiClient\Api\Client\Domain\JsonDataMapperInterface;
 use SolrRestApiClient\Api\Client\Domain\StopWord\StopWordCollection;
@@ -8,18 +8,34 @@ use SolrRestApiClient\Api\Client\Domain\StopWord\StopWordCollection;
 /**
  * Class StopWordDataMapper
  *
- * Reconstitutes the json response to a stopword object.
+ * Reconstitutes the json response to a StopWord object.
  *
  * @author Timo Schmidt <timo.schmidt@aoe.com>
- * @package SolrRestApiClient\Api\Client\Domain\Synonym
+ * @package SolrRestApiClient\Api\Client\Domain\StopWord
  */
 class StopWordDataMapper implements JsonDataMapperInterface {
 
 	/**
-	 * @return object
+	 * @param string $json
+	 * @return StopWordCollection
 	 */
 	public function fromJson($json) {
-		// TODO: Implement fromJson() method.
+		$stopWordCollection = new StopWordCollection();
+		$object = json_decode($json);
+
+		if (!is_object($object) || !isset($object->wordSet->managedList)) {
+			return $stopWordCollection;
+		}
+
+		$mapping = $object->wordSet->managedList;
+		foreach ($mapping as $word) {
+			$stopWord = new StopWord();
+			$stopWord->setWord($word);
+
+			$stopWordCollection->add($stopWord);
+		}
+
+		return $stopWordCollection;
 	}
 
 	/**
