@@ -1,6 +1,6 @@
 <?php
 
-namespace SolrRestApiClient\Tests\Api\Client\Domain\Synonym;
+namespace SolrRestApiClient\Tests\Api\Client\Domain\StopWord;
 
 use SolrRestApiClient\Api\Client\Domain\StopWord\StopWord;
 use SolrRestApiClient\Api\Client\Domain\StopWord\StopWordCollection;
@@ -41,7 +41,7 @@ class StopWordDataMapperTestCase extends BaseTestCase {
 	/**
 	 * @test
 	 */
-	public function canBuildSynonymCollectionFromJson() {
+	public function canBuildStopWordCollectionFromJson() {
 		$input = '{
 					  "responseHeader": {
 						"status": 0,
@@ -61,12 +61,10 @@ class StopWordDataMapperTestCase extends BaseTestCase {
 				}';
 
 		$stopWordCollection = $this->dataMapper->fromJson($input);
-
 		$this->assertEquals(2, $stopWordCollection->getCount(), 'Unexpected amount of stopWords after reconstitution.');
 
 		/** @var $first StopWord */
 		$first = $stopWordCollection->getByIndex(0);
-
 		$this->assertEquals("one", $first->getWord(), 'Could not create solr stopWord collection from rest api response');
 	}
 }
