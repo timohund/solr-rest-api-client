@@ -1,6 +1,7 @@
 <?php
 
 namespace SolrRestApiClient\Api\Client\Domain\StopWord;
+
 use SolrRestApiClient\Api\Client\Domain\AbstractCollection;
 
 /**

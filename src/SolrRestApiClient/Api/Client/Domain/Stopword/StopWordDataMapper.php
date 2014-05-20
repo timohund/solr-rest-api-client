@@ -3,7 +3,6 @@
 namespace SolrRestApiClient\Api\Client\Domain\StopWord;
 
 use SolrRestApiClient\Api\Client\Domain\JsonDataMapperInterface;
-use SolrRestApiClient\Api\Client\Domain\StopWord\StopWordCollection;
 
 /**
  * Class StopWordDataMapper
