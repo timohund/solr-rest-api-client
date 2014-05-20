@@ -10,44 +10,21 @@ use SolrRestApiClient\Tests\BaseTestCase;
 class SynonymDataMapperTestCase extends BaseTestCase {
 
 	/**
-	 * @var string
-	 */
-	protected $host = 'localhost';
-
-	/**
-	 * @var int
-	 */
-	protected $port = 8080;
-
-	/**
-	 * @var string
-	 */
-	protected $corePath = 'solr/saascluster-qvc-it-devbox/';
-
-	/**
 	 * @var SynonymDataMapper
 	 */
 	protected $dataMapper = null;
 
 	/**
-	 * @var \SolrRestApiClient\Api\Client\Domain\Synonym\SynonymRepository()
-	 */
-	protected $synonymRepository;
-
-	/**
 	 * @return void
 	 */
 	public function setUp() {
-		$factory = new \SolrRestApiClient\Common\Factory();
 		$this->dataMapper = new SynonymDataMapper();
-		$this->synonymRepository = $factory->getSynonymRepository($this->host, $this->port, $this->corePath);
 	}
 
 	/**
 	 * @return void
 	 */
-	public function tearDown() {
-	}
+	public function tearDown() { }
 
 	/**
 	 * @test

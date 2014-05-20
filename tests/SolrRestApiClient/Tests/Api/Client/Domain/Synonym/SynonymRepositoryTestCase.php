@@ -5,24 +5,10 @@ namespace SolrRestApiClient\Tests\Api\Client\Domain\Synonym;
 use SolrRestApiClient\Api\Client\Domain\Synonym\Synonym;
 use SolrRestApiClient\Api\Client\Domain\Synonym\SynonymCollection;
 use SolrRestApiClient\Api\Client\Domain\Synonym\SynonymDataMapper;
+use SolrRestApiClient\Api\Client\Domain\Synonym\SynonymRepository;
 use SolrRestApiClient\Tests\BaseTestCase;
 
 class SynonymRepositoryTestCase extends BaseTestCase {
-
-	/**
-	 * @var string
-	 */
-	protected $host = 'localhost';
-
-	/**
-	 * @var int
-	 */
-	protected $port = 8080;
-
-	/**
-	 * @var string
-	 */
-	protected $corePath = 'solr/saascluster-qvc-it-devbox/';
 
 	/**
 	 * @var SynonymDataMapper
@@ -38,25 +24,21 @@ class SynonymRepositoryTestCase extends BaseTestCase {
 	 * @return void
 	 */
 	public function setUp() {
-		$factory = new \SolrRestApiClient\Common\Factory();
 		$this->dataMapper = new SynonymDataMapper();
-		$this->synonymRepository = $factory->getSynonymRepository($this->host, $this->port, $this->corePath);
+		$this->synonymRepository = $this->getMock('SolrRestApiClient\Api\Client\Domain\Synonym\SynonymRepository',array('executeDeleteRequest','executeGetRequest','executePostRequest'));
+		$this->synonymRepository->injectDataMapper($this->dataMapper);
 	}
 
 	/**
 	 * @return void
 	 */
-	public function tearDown() {
-	}
-
+	public function tearDown() {}
 
 	/**
 	 * @test
 	 */
-	public function canAddAndDeleteSynonym() {
-
+	public function canAddAll() {
 		$synonymCollection = new \SolrRestApiClient\Api\Client\Domain\Synonym\SynonymCollection();
-
 		$synonym = new \SolrRestApiClient\Api\Client\Domain\Synonym\Synonym();
 		$synonym->setMainWord('foo');
 		$synonym->addWordsWithSameMeaning('bar');
@@ -65,45 +47,104 @@ class SynonymRepositoryTestCase extends BaseTestCase {
 
 		$synonymCollection->add($synonym);
 
+		$expectedJson = '{"foo":["bar","bla","bluqqqqqqqqqqq"]}';
+		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody','getStatusCode'), array(),'',false);
+		$responseMock->expects($this->once())->method('getStatusCode')->will($this->returnValue(200));
+		$this->synonymRepository->expects($this->once())->method('executePostRequest')->with('it',$expectedJson)->will(
+			$this->returnValue($responseMock)
+		);
+
 		$result = $this->synonymRepository->addAll($synonymCollection, 'it');
 		$this->assertTrue($result);
-
-		$this->synonymRepository->deleteByMainWord("it", 'foo');
 	}
 
 	/**
 	 * @test
 	 */
-	public function canGetAllSynonymsCollectionObject() {
-		$synonymCollection = $this->createSynonymsCollection(array("foo" => array("bar", "bla", "blu"), "test" => array("1", "2", "3")));
-		$this->synonymRepository->addAll($synonymCollection, 'it');
+	public function canGetAllSynonyms() {
+		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody'), array(),'',false);
+
+		$fixtureResponse = '{
+ 		    "responseHeader": {
+                "status": 0,
+                "QTime": 3
+              },
+             "synonymMappings": {
+                "initArgs": {
+                    "ignoreCase": false
+                },
+	            "initializedOn": "2014-05-19T15:32:37.988Z",
+                 "managedMap": {
+                    "foo": [
+                        "bar",
+                     "bla"
+                    ],
+	                "sad": [
+                        "unhappy"
+                    ],
+                    "sada": [
+                        "unhappy",
+                        "unhapy"
+                    ]
+                }
+              }
+			}';
+
+		$responseMock->expects($this->once())->method('getBody')->will($this->returnValue(
+			$fixtureResponse
+		));
+		$this->synonymRepository->expects($this->once())->method('executeGetRequest')->with("it")->will(
+			$this->returnValue($responseMock)
+		);
 
 		$synonymsAll = $this->synonymRepository->getAll("it");
 		$this->assertInstanceOf('SolrRestApiClient\Api\Client\Domain\Synonym\SynonymCollection', $synonymsAll);
-
-		$synonyms = $this->synonymRepository->getByMainWord("it", "foo");
-		$this->assertEquals(1, count($synonyms), "Amount of added synonyms not equal to expected returned count");
-		$this->synonymRepository->deleteByMainWord("it", 'foo');
-
-		$synonyms2 = $this->synonymRepository->getByMainWord("it", "test");
-		$this->assertEquals(3, count($synonyms2->getByIndex(0)->getWordsWithSameMeaning()), "Amount of retrieved words with same meaning not equal to added");
-		$this->assertEquals("test", $synonyms2->getByIndex(0)->getMainWord(), "Main word not equal to added main word");
-		$this->synonymRepository->deleteByMainWord("it", 'test');
+		$this->assertEquals(3,$synonymsAll->getCount(),'Unexpected amount of synonyms retrieved');
 	}
 
 	/**
-	 * @param array $synonyms
-	 * @return SynonymCollection $synonymCollection
+	 * @test
 	 */
-	protected function createSynonymsCollection($synonyms) {
-		$synonymCollection = new \SolrRestApiClient\Api\Client\Domain\Synonym\SynonymCollection();
-		foreach($synonyms as $mainWord => $wordsWithSameMeaning){
-			$synonym = new \SolrRestApiClient\Api\Client\Domain\Synonym\Synonym();
-			$synonym->setMainWord($mainWord);
-			foreach($wordsWithSameMeaning as $wordWithSameMeaning)
-				$synonym->addWordsWithSameMeaning($wordWithSameMeaning);
-			$synonymCollection->add($synonym);
-		}
-		return $synonymCollection;
+	public function canGetByMainWord() {
+		$fixtureResponse = '{
+		    "responseHeader": {
+                "status": 0,
+                "QTime": 6
+            },
+            "sada": [
+                "bar",
+                "bla",
+                "whatever"
+            ]
+		}';
+
+		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody'), array(),'',false);
+		$responseMock->expects($this->once())->method('getBody')->will($this->returnValue(
+			$fixtureResponse
+		));
+
+		$this->synonymRepository->expects($this->once())->method('executeGetRequest')->will(
+			$this->returnValue($responseMock)
+		);
+
+		$synonyms2 = $this->synonymRepository->getByMainWord("sada","it");
+		$this->assertEquals(3, count($synonyms2->getByIndex(0)->getWordsWithSameMeaning()), "Amount of retrieved words with same meaning not equal to added");
+
+		$wordsWithSameMeaning = array_values($synonyms2->getByIndex(0)->getWordsWithSameMeaning());
+		$this->assertEquals("whatever", $wordsWithSameMeaning[2], "Amount of retrieved words with same meaning not equal to added");
+		$this->assertEquals("sada", $synonyms2->getByIndex(0)->getMainWord(), "Main word not equal to added main word");
 	}
+
+	/**
+	 * @test
+	 */
+	public function canDeleteByMainWord() {
+
+		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody'), array(),'',false);
+		$this->synonymRepository->expects($this->once())->method('executeDeleteRequest')->with("it","test")->will(
+			$this->returnValue($responseMock)
+		);
+		$this->synonymRepository->deleteByMainWord('test',"it");
+	}
+
 }

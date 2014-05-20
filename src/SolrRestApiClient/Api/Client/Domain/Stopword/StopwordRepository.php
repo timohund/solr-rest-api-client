@@ -27,7 +27,7 @@ class StopWordRepository extends AbstractRepository {
 	 * @param $tag
 	 * @return bool
 	 */
-	public function addAll(StopWordCollection $stopWords, $tag) {
+	public function addAll(StopWordCollection $stopWords, $tag = 'default') {
 		$json = $this->dataMapper->toJson($stopWords);
 		$response = $this->executePostRequest($tag, $json);
 

@@ -36,7 +36,7 @@ class SynonymRepository extends AbstractRepository {
 
 	/**
 	 * @param $tag
-	 * @return \Guzzle\Http\Message\Response
+	 * @return SynonymCollection
 	 */
 	public function getAll($tag = "default") {
 		$response = $this->executeGetRequest($tag);
@@ -46,11 +46,11 @@ class SynonymRepository extends AbstractRepository {
 	}
 
 	/**
-	 * @param string $tag
 	 * @param string $mainWord
-	 * @return \Guzzle\Http\Message\Response
+	 * @param string $tag
+	 * @return SynonymCollection
 	 */
-	public function getByMainWord($tag = "default", $mainWord = '') {
+	public function getByMainWord($mainWord = '', $tag = "default") {
 		$response = $this->executeGetRequest($tag, $mainWord);
 		$result = $response->getBody(true);
 
@@ -82,12 +82,12 @@ class SynonymRepository extends AbstractRepository {
 	}
 
 	/**
-	 * @param string $tag
 	 * @param string $mainWord
+	 * @param string $tag
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public function deleteByMainWord($tag = "default", $mainWord) {
+	public function deleteByMainWord($mainWord, $tag = "default") {
 		try {
 			$this->executeDeleteRequest($tag, $mainWord);
 			return true;

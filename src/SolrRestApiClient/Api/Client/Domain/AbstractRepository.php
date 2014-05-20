@@ -155,6 +155,7 @@ abstract class AbstractRepository {
 			$endpoint = $endpoint . '/' .$mainWord;
 		}
 		$response = $this->restClient->get($endpoint, $this->headers, $options)->send();
+
 		return $response;
 	}
 
