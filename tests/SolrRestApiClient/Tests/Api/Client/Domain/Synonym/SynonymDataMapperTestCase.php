@@ -52,6 +52,24 @@ class SynonymDataMapperTestCase extends BaseTestCase {
 	/**
 	 * @test
 	 */
+	public function canBuildJsonFromSynonymCollection() {
+		$synonymCollection = new SynonymCollection();
+
+		$synonym = new Synonym();
+		$synonym->setMainWord("lucky");
+		$synonym->addWordsWithSameMeaning("happy");
+		$synonymCollection->add($synonym);
+
+		$this->assertEquals(1, $synonymCollection->getCount());
+		$expectedJson = '{"lucky":["happy"]}';
+		$json = $this->dataMapper->toJson($synonymCollection);
+
+		$this->assertEquals($expectedJson, $json);
+	}
+	
+	/**
+	 * @test
+	 */
 	public function canBuildSynonymCollectionFromJson() {
 		$input = '{
                 "responseHeader":{
