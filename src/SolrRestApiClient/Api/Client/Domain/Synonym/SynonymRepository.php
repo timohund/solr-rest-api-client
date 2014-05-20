@@ -1,107 +1,19 @@
 <?php
 
 namespace SolrRestApiClient\Api\Client\Domain\Synonym;
+use SolrRestApiClient\Api\Client\Domain\AbstractRepository;
 
 /**
  * Repository to handle synonyms in solr using the RestAPI
  *
  * @author Timo Schmidt <timo.schmidt@aoe.com>
  */
-class SynonymRepository {
-
-	/**
-	 * @var \Guzzle\Http\Client
-	 */
-	protected $restClient;
-
-	/**
-	 * @var \SolrRestApiClient\Api\Client\Domain\Synonym\SynonymDataMapper
-	 */
-	protected $dataMapper;
-
-	/**
-	 * @var string
-	 */
-	protected $hostName = 'localhost';
-
-	/**
-	 * @var int
-	 */
-	protected $port = 8080;
-
-	/**
-	 * @var string
-	 */
-	protected $corePath = 'solr/';
+class SynonymRepository extends AbstractRepository {
 
 	/**
 	 * @var string
 	 */
 	protected $restEndPointPath = 'schema/analysis/synonyms/';
-
-	/**
-	 * @return string
-	 */
-	public function getCorePath() {
-		return $this->corePath;
-	}
-
-	/**
-	 * @param string $corePath
-	 */
-	public function setCorePath($corePath) {
-		$this->corePath = $corePath;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getHostName() {
-		return $this->hostName;
-	}
-
-	/**
-	 * @param string $hostName
-	 */
-	public function setHostName($hostName) {
-		$this->hostName = $hostName;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getPort() {
-		return $this->port;
-	}
-
-	/**
-	 * @param int $port
-	 */
-	public function setPort($port) {
-		$this->port = $port;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getRestEndPointPath() {
-		return $this->restEndPointPath;
-	}
-
-	/**
-	 * @param string $restEndPointPath
-	 */
-	public function setRestEndPointPath($restEndPointPath) {
-		$this->restEndPointPath = $restEndPointPath;
-	}
-
-	/**
-	 * @param \Guzzle\Http\Client $restClient
-	 * @return void
-	 */
-	public function injectRestClient(\Guzzle\Http\Client $restClient) {
-		$this->restClient = $restClient;
-	}
 
 	/**
 	 * @param SynonymDataMapper $dataMapper
@@ -111,38 +23,76 @@ class SynonymRepository {
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getBaseUrl() {
-		return 'http://'.$this->hostName.':'.$this->port.'/';
-	}
-
-
-	/**
-	 * @param $tag
-	 * @param null $body
-	 * @param array $options
-	 * @return \Guzzle\Http\Message\Response
-	 */
-	protected function executePostRequest($tag, $body = null,$options = array()) {
-		$synonymEndpoint = $this->corePath. $this->restEndPointPath. $tag;
-		$response = $this->restClient->setBaseUrl( $this->getBaseUrl() )
-			->post($synonymEndpoint,array('Content-type' =>'application/json'), $body, $options)
-			->send();
-
-		return $response;
-	}
-
-
-	/**
 	 * @param SynonymCollection $synonyms
-	 * @param string $tag
+	 * @param $tag
+	 * @return bool
 	 */
-	public function addAll(SynonymCollection $synonyms, $tag) {
+	public function addAll(SynonymCollection $synonyms, $tag = "default") {
 		$json = $this->dataMapper->toJson($synonyms);
 		$response = $this->executePostRequest($tag, $json);
 
 		return $response->getStatusCode() == 200;
 	}
 
+	/**
+	 * @param $tag
+	 * @return SynonymCollection
+	 */
+	public function getAll($tag = "default") {
+		$response = $this->executeGetRequest($tag);
+		$result = $response->getBody(true);
+
+		return $this->dataMapper->fromJson($result);
+	}
+
+	/**
+	 * @param string $mainWord
+	 * @param string $tag
+	 * @return SynonymCollection
+	 */
+	public function getByMainWord($mainWord = '', $tag = "default") {
+		$response = $this->executeGetRequest($tag, $mainWord);
+		$result = $response->getBody(true);
+
+		return $this->dataMapper->fromJsonToMainWordCollection($result, $mainWord, $tag);
+	}
+
+	/**
+	 * @param $tag
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function deleteAll($tag = "default") {
+		$result = array();
+		$synonymsCollection = $this->getAll($tag);
+
+		foreach($synonymsCollection->toArray() as $synonymObject) {
+			$result[] = $synonymObject->getMainWord();
+		}
+
+		if(count($result) > 0) {
+			foreach($result as $mainWord) {
+				$response = $this->executeDeleteRequest($tag, $mainWord);
+				if($response->getStatusCode() != 200 ) {
+					throw new \Exception($mainWord . " do not exists.");
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @param string $mainWord
+	 * @param string $tag
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function deleteByMainWord($mainWord, $tag = "default") {
+		try {
+			$this->executeDeleteRequest($tag, $mainWord);
+			return true;
+		} catch(\Exception $e) {
+			var_dump($e->getMessage());
+		}
+	}
 }

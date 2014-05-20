@@ -13,6 +13,7 @@ class Factory {
 	 * @param string $hostname
 	 * @param int $port
 	 * @param string $corePath
+	 * @return \SolrRestApiClient\Api\Client\Domain\Synonym\SynonymRepository
 	 */
 	public static function getSynonymRepository($hostname = 'localhost', $port = 8080, $corePath = 'solr/') {
 		$guzzle             = self::getPreparedGuzzleClient();
@@ -24,6 +25,7 @@ class Factory {
 		$synonymRepository->setCorePath($corePath);
 		$synonymRepository->injectRestClient($guzzle);
 		$synonymRepository->injectDataMapper($dataMapper);
+		$synonymRepository->setRestClientBaseUrl();
 
 		return $synonymRepository;
 	}

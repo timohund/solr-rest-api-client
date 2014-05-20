@@ -28,7 +28,7 @@ to maintain the entities in solr.
     $synonym->addWordsWithSameMeaning('bar');
     $synonym->addWordsWithSameMeaning('bla');
 
-    $synonymCollection->attach($synonym);
+    $synonymCollection->add($synonym);
 
     $result = $repository->addAll($synonymCollection,'mysynonymtag');
 
