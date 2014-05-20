@@ -5,7 +5,6 @@ namespace SolrRestApiClient\Tests\Api\Client\Domain\Synonym;
 use SolrRestApiClient\Api\Client\Domain\StopWord\StopWord;
 use SolrRestApiClient\Api\Client\Domain\StopWord\StopWordCollection;
 use SolrRestApiClient\Api\Client\Domain\StopWord\StopWordDataMapper;
-use SolrRestApiClient\Api\Client\Domain\StopWord\StopWordRepository;
 use SolrRestApiClient\Tests\BaseTestCase;
 
 class StopWordDataMapperTestCase extends BaseTestCase {
