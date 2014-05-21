@@ -89,12 +89,9 @@ to all of them:
 
     	$synonymRepository->addAll($synonymCollection);
     }
-::
 
 
-
-
-
+Status
 
 .. |buildStatusIcon| image:: https://secure.travis-ci.org/timoschmidt/solr-rest-api-client.png?branch=master
    :alt: Build Status
