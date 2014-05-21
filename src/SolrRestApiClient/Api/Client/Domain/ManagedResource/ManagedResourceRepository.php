@@ -17,20 +17,20 @@ class ManagedResourceRepository extends AbstractRepository {
 	protected $restEndPointPath = 'schema/managed';
 
 	/**
-	 * @param SynonymDataMapper $dataMapper
+	 * @param ManagedResourceDataMapper $dataMapper
 	 */
-	public function injectDataMapper(SynonymDataMapper $dataMapper) {
+	public function injectDataMapper(ManagedResourceDataMapper $dataMapper) {
 		$this->dataMapper = $dataMapper;
 	}
 
 	/**
-	 * @return \Guzzle\Http\Message\Response
+	 * @return ManagedResourceCollection
 	 */
-	public function getTags() {
+	public function getAll() {
 		$endpoint   = $this->getEndpoint();
 		$response   = $this->executeGetRequest($endpoint);
 		$result     = $response->getBody(true);
 
-		return $this->dataMapper->fromRestManagedJson($result);
+		return $this->dataMapper->fromJson($result);
 	}
 }

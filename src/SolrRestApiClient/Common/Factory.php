@@ -34,7 +34,7 @@ class Factory {
 	 * @param string $hostname
 	 * @param int $port
 	 * @param string $corePath
-	 * @return \SolrRestApiClient\Api\Client\Domain\Synonym\ManagedResourceRepository
+	 * @return \SolrRestApiClient\Api\Client\Domain\ManagedResource\ManagedResourceRepository
 	 */
 	public static function getManagedResourceRepository($hostname = 'localhost', $port = 8080, $corePath = 'solr/') {
 		$guzzle = self::getPreparedGuzzleClient();

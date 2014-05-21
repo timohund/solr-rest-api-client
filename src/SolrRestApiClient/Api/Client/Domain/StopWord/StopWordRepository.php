@@ -3,13 +3,14 @@
 namespace SolrRestApiClient\Api\Client\Domain\StopWord;
 
 use SolrRestApiClient\Api\Client\Domain\AbstractRepository;
+use SolrRestApiClient\Api\Client\Domain\AbstractTaggedResourceRepository;
 
 /**
  * Repository to handle StopWord in solr using the RestAPI
  *
  * @author Timo Schmidt <timo.schmidt@aoe.com>
  */
-class StopWordRepository extends AbstractRepository {
+class StopWordRepository extends AbstractTaggedResourceRepository {
 
 	/**
 	 * @var string
@@ -25,13 +26,14 @@ class StopWordRepository extends AbstractRepository {
 
 	/**
 	 * @param StopWordCollection $stopWords
-	 * @param $tag
+	 * @param $forceResourceTag
 	 * @return bool
 	 */
-	public function addAll(StopWordCollection $stopWords, $tag = 'default') {
-		$json       = $this->dataMapper->toJson($stopWords);
-		$endpoint   = $this->getEndpoint(array($tag));
-		$response   = $this->executePostRequest($endpoint, $json);
+	public function addAll(StopWordCollection $stopWords, $forceResourceTag = null) {
+		$resourceTag    = $this->getTag($forceResourceTag);
+		$json           = $this->dataMapper->toJson($stopWords);
+		$endpoint       = $this->getEndpoint(array($resourceTag));
+		$response       = $this->executePostRequest($endpoint, $json);
 
 		return $response->getStatusCode() == 200;
 	}
