@@ -1,14 +1,15 @@
 <?php
 
-namespace SolrRestApiClient\Api\Client\Domain\Synonym;
+namespace SolrRestApiClient\Api\Client\Domain\ManagedResource;
+
 use SolrRestApiClient\Api\Client\Domain\AbstractRepository;
 
 /**
  * Repository to manage resources in solr using the RestAPI
  *
- * @author Timo Schmidt <timo.schmidt@aoe.com>
+ * @author Nikolay Diaur <nikolay.diaur@aoe.com>
  */
-class SynonymTagRepository extends AbstractRepository {
+class ManagedResourceRepository extends AbstractRepository {
 
 	/**
 	 * @var string
@@ -26,8 +27,9 @@ class SynonymTagRepository extends AbstractRepository {
 	 * @return \Guzzle\Http\Message\Response
 	 */
 	public function getTags() {
-		$response = $this->executeRestManagedRequest();
-		$result = $response->getBody(true);
+		$endpoint   = $this->getEndpoint();
+		$response   = $this->executeGetRequest($endpoint);
+		$result     = $response->getBody(true);
 
 		return $this->dataMapper->fromRestManagedJson($result);
 	}

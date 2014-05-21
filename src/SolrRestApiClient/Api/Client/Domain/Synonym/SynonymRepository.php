@@ -28,8 +28,9 @@ class SynonymRepository extends AbstractRepository {
 	 * @return bool
 	 */
 	public function addAll(SynonymCollection $synonyms, $tag = "default") {
-		$json = $this->dataMapper->toJson($synonyms);
-		$response = $this->executePostRequest($tag, $json);
+		$json       = $this->dataMapper->toJson($synonyms);
+		$endpoint   = $this->getEndpoint(array($tag));
+		$response   = $this->executePostRequest($endpoint, $json);
 
 		return $response->getStatusCode() == 200;
 	}
@@ -39,8 +40,9 @@ class SynonymRepository extends AbstractRepository {
 	 * @return SynonymCollection
 	 */
 	public function getAll($tag = "default") {
-		$response = $this->executeGetRequest($tag);
-		$result = $response->getBody(true);
+		$endpoint   = $this->getEndpoint(array($tag));
+		$response   = $this->executeGetRequest($endpoint);
+		$result     = $response->getBody(true);
 
 		return $this->dataMapper->fromJson($result);
 	}
@@ -51,7 +53,13 @@ class SynonymRepository extends AbstractRepository {
 	 * @return SynonymCollection
 	 */
 	public function getByMainWord($mainWord = '', $tag = "default") {
-		$response = $this->executeGetRequest($tag, $mainWord);
+		$endpoint = $this->getEndpoint(array($tag));
+
+		if(trim($mainWord) != '') {
+			$endpoint = $endpoint . '/' .$mainWord;
+		}
+
+		$response = $this->executeGetRequest($endpoint);
 		$result = $response->getBody(true);
 
 		return $this->dataMapper->fromJsonToMainWordCollection($result, $mainWord, $tag);
@@ -72,7 +80,8 @@ class SynonymRepository extends AbstractRepository {
 
 		if(count($result) > 0) {
 			foreach($result as $mainWord) {
-				$response = $this->executeDeleteRequest($tag, $mainWord);
+				$endpoint = $this->getEndpoint(array($tag, $mainWord));
+				$response = $this->executeDeleteRequest($endpoint);
 				if($response->getStatusCode() != 200 ) {
 					throw new \Exception($mainWord . " do not exists.");
 				}
@@ -89,7 +98,8 @@ class SynonymRepository extends AbstractRepository {
 	 */
 	public function deleteByMainWord($mainWord, $tag = "default") {
 		try {
-			$this->executeDeleteRequest($tag, $mainWord);
+			$endpoint = $this->getEndpoint(array($tag, $mainWord));
+			$this->executeDeleteRequest($endpoint);
 			return true;
 		} catch(\Exception $e) {
 			var_dump($e->getMessage());

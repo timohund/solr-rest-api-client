@@ -29,10 +29,10 @@ class StopWordRepository extends AbstractRepository {
 	 * @return bool
 	 */
 	public function addAll(StopWordCollection $stopWords, $tag = 'default') {
-		$json = $this->dataMapper->toJson($stopWords);
-		$response = $this->executePostRequest($tag, $json);
+		$json       = $this->dataMapper->toJson($stopWords);
+		$endpoint   = $this->getEndpoint(array($tag));
+		$response   = $this->executePostRequest($endpoint, $json);
 
-		return $response;
-		//return $response->getStatusCode() == 200;
+		return $response->getStatusCode() == 200;
 	}
 }

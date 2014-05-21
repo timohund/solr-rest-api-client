@@ -117,11 +117,12 @@ abstract class AbstractRepository {
 	}
 
 	/**
-	 * @param string $tag
+	 * @param array $arguments
 	 * @return string
 	 */
-	protected function getEndpoint($tag) {
-		return $this->corePath . $this->restEndPointPath . $tag;
+	protected function getEndpoint($arguments = array()) {
+		$argumentsString = implode("/",$arguments);
+		return $this->corePath . $this->restEndPointPath . $argumentsString;
 	}
 
 	/**
@@ -132,54 +133,34 @@ abstract class AbstractRepository {
 	}
 
 	/**
-	 * @param $tag
+	 * @param $endpoint
 	 * @param null $body
 	 * @param array $options
 	 * @return \Guzzle\Http\Message\Response
 	 */
-	protected function executePostRequest($tag, $body = null, $options = array()) {
-		$endpoint = $this->getEndpoint($tag);
+	protected function executePostRequest($endpoint, $body = null, $options = array()) {
 		$response = $this->restClient->post($endpoint, $this->headers, $body, $options)->send();
 		return $response;
 	}
 
 	/**
-	 * @param string $tag
-	 * @param string $mainWord
+	 * @param $endpoint
 	 * @param array $options
 	 * @return \Guzzle\Http\Message\Response
 	 */
-	protected function executeGetRequest($tag, $mainWord = '', $options = array()) {
-		$endpoint = $this->getEndpoint($tag);
-		if(trim($mainWord) != '') {
-			$endpoint = $endpoint . '/' .$mainWord;
-		}
-
+	protected function executeGetRequest($endpoint, $options = array()) {
 		$response = $this->restClient->get($endpoint, $this->headers, $options)->send();
-
 		return $response;
 	}
 
 	/**
-	 * @param string $tag
-	 * @param string $synonym
+	 * @param string $endpoint
 	 * @param array $options
 	 * @return \Guzzle\Http\Message\Response
 	 */
-	protected function executeDeleteRequest($tag, $synonym, $options = array()) {
-		$endpoint = $this->getEndpoint($tag) . '/' . $synonym;
+	protected function executeDeleteRequest($endpoint, $options = array()) {
 		$response = $this->restClient->delete($endpoint, $this->headers, $options)->send();
 		return $response;
-	}
-
-	/**
-	 * @param array $options
-	 * @return mixed
-	 */
-	protected function executeRestManagedRequest($options = array()) {
-		$endpoint = $this->corePath.$this->restEndPointPath;
-
-		return $this->restClient->get($endpoint, $this->headers, $options)->send();
 	}
 }
 

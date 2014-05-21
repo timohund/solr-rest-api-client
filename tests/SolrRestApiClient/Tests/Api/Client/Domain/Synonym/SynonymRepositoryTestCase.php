@@ -50,7 +50,7 @@ class SynonymRepositoryTestCase extends BaseTestCase {
 		$expectedJson = '{"foo":["bar","bla","bluqqqqqqqqqqq"]}';
 		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody','getStatusCode'), array(),'',false);
 		$responseMock->expects($this->once())->method('getStatusCode')->will($this->returnValue(200));
-		$this->synonymRepository->expects($this->once())->method('executePostRequest')->with('it',$expectedJson)->will(
+		$this->synonymRepository->expects($this->once())->method('executePostRequest')->with('solr/schema/analysis/synonyms/it',$expectedJson)->will(
 			$this->returnValue($responseMock)
 		);
 
@@ -93,7 +93,7 @@ class SynonymRepositoryTestCase extends BaseTestCase {
 		$responseMock->expects($this->once())->method('getBody')->will($this->returnValue(
 			$fixtureResponse
 		));
-		$this->synonymRepository->expects($this->once())->method('executeGetRequest')->with("it")->will(
+		$this->synonymRepository->expects($this->once())->method('executeGetRequest')->with('solr/schema/analysis/synonyms/it')->will(
 			$this->returnValue($responseMock)
 		);
 
@@ -140,7 +140,7 @@ class SynonymRepositoryTestCase extends BaseTestCase {
 	 */
 	public function canDeleteByMainWord() {
 		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody'), array(),'',false);
-		$this->synonymRepository->expects($this->once())->method('executeDeleteRequest')->with("it","test")->will(
+		$this->synonymRepository->expects($this->once())->method('executeDeleteRequest')->with('solr/schema/analysis/synonyms/it/test')->will(
 			$this->returnValue($responseMock)
 		);
 		$this->synonymRepository->deleteByMainWord('test',"it");

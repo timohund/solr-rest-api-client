@@ -34,21 +34,21 @@ class Factory {
 	 * @param string $hostname
 	 * @param int $port
 	 * @param string $corePath
-	 * @return \SolrRestApiClient\Api\Client\Domain\Synonym\SynonymTagRepository
+	 * @return \SolrRestApiClient\Api\Client\Domain\Synonym\ManagedResourceRepository
 	 */
-	public static function getSynonymTagRepository($hostname = 'localhost', $port = 8080, $corePath = 'solr/') {
+	public static function getManagedResourceRepository($hostname = 'localhost', $port = 8080, $corePath = 'solr/') {
 		$guzzle = self::getPreparedGuzzleClient();
-		$dataMapper = new \SolrRestApiClient\Api\Client\Domain\Synonym\SynonymDataMapper();
+		$dataMapper = new \SolrRestApiClient\Api\Client\Domain\ManagedResource\ManagedResourceDataMapper();
 
-		$synonymTagRepository = new \SolrRestApiClient\Api\Client\Domain\Synonym\SynonymTagRepository();
-		$synonymTagRepository->setHostName($hostname);
-		$synonymTagRepository->setPort($port);
-		$synonymTagRepository->setCorePath($corePath);
-		$synonymTagRepository->injectRestClient($guzzle);
-		$synonymTagRepository->injectDataMapper($dataMapper);
-		$synonymTagRepository->setRestClientBaseUrl();
+		$managedResourceRepository = new \SolrRestApiClient\Api\Client\Domain\ManagedResource\ManagedResourceRepository();
+		$managedResourceRepository->setHostName($hostname);
+		$managedResourceRepository->setPort($port);
+		$managedResourceRepository->setCorePath($corePath);
+		$managedResourceRepository->injectRestClient($guzzle);
+		$managedResourceRepository->injectDataMapper($dataMapper);
+		$managedResourceRepository->setRestClientBaseUrl();
 
-		return $synonymTagRepository;
+		return $managedResourceRepository;
 	}
 
 	/**
