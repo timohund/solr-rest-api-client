@@ -86,4 +86,26 @@ class SynonymDataMapper implements JsonDataMapperInterface {
 
 		return $synonymCollection;
 	}
+
+	/**
+	 * @param string $json
+	 * @return SynonymCollection
+	 */
+	public function fromRestManagedJson($json) {
+		$synonymCollection = new SynonymCollection();
+		$object = json_decode($json);
+
+		if (!is_object($object) || !isset($object->managedResources) || count($object->managedResources) == 0) {
+			return $synonymCollection;
+		}
+
+		foreach($object->managedResources as $resources) {
+			if(preg_match('/synonyms/', $resources->resourceId)) {
+				$matches = preg_split('/synonyms\\//', $resources->resourceId);
+				$tags[] = $matches[1];
+			}
+
+		}
+		return $tags;
+	}
 }

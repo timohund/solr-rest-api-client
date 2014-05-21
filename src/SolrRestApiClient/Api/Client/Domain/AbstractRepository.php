@@ -169,8 +169,17 @@ abstract class AbstractRepository {
 	protected function executeDeleteRequest($tag, $synonym, $options = array()) {
 		$endpoint = $this->getEndpoint($tag) . '/' . $synonym;
 		$response = $this->restClient->delete($endpoint, $this->headers, $options)->send();
-
 		return $response;
+	}
+
+	/**
+	 * @param array $options
+	 * @return mixed
+	 */
+	protected function executeRestManagedRequest($options = array()) {
+		$endpoint = $this->corePath.$this->restEndPointPath;
+
+		return $this->restClient->get($endpoint, $this->headers, $options)->send();
 	}
 }
 
