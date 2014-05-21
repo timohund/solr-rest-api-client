@@ -7,7 +7,7 @@ namespace SolrRestApiClient\Tests;
  * @date 14.11.12
  * @time 17:51
  */
-class BaseTestCase extends \PHPUnit_Framework_TestCase {
+abstract class BaseTestCase extends \PHPUnit_Framework_TestCase {
 
 	/**
 	 * Returns the content of a given fixture file.

@@ -8,11 +8,32 @@ Solr RESTApi Client
 :Homepage: http://www.searchperience.com/
 :Build status: |buildStatusIcon|
 
-Solr Client basics
+Solr client basics
 ========================
 
-You can use the factory class to retrieve an instance of of the repositories that can be used
-to maintain the entities in solr.
+
+The solr rest api client can be used to manage the following solr entities with the solr rest api:
+
+* Synonyms
+* Stopwords
+* Managed Resources
+
+
+Synonyms
+======================
+
+In solr you can configure a "managed" synonym with the following entry in your schema.xml:
+
+::
+
+     <filter class="org.apache.solr.rest.schema.analysis.ManagedSynonymFilterFactory" managed="mytag" />
+::
+
+When you have defined a managed synonym list as described below you can see it in the list of the manged
+resources (e.g.: http://localhost:8080/<core/collectionpath>/schema/managed) and manage it with the solr rest api
+
+
+The following example shows how you can used the api client to manage synonyms with a certain tag:
 
 ::
 
@@ -30,11 +51,48 @@ to maintain the entities in solr.
 
     $synonymCollection->add($synonym);
 
-    $result = $repository->addAll($synonymCollection,'mysynonymtag');
+    $result = $repository->addAll($synonymCollection,'mytag');
+::
 
-
-Synonyms
+Managed Resources
 ======================
+
+Some resources in solr (e.g. synonyms and stopwords) can be managed as managed resources.
+To be able to read and write them you need to be able to get them from the solr server.
+
+To manage this, you can use the ManagedResourceRepository.
+
+The following example shows how to get all synonym resources and add a synonym collection
+to all of them:
+
+::
+
+    require '<vendorDir>/vendor/autoload.php';
+
+    $factory = new \SolrRestApiClient\Common\Factory();
+    $managedResourceRepository  = $factory->getManagedResourceRepository('localhost',8080,'solr/<core/collection>/');
+    $resources                  = $managedResourceRepository->getAll();
+
+    $synonymRepository          = $factory->getSynonymRepository('localhost',8080,'solr/<core/collection>/');
+    $synonymResources           = $resources->getSynonymResources();
+
+    foreach($synonymResources as $synonymResource) {
+	    $synonymRepository->setResource($synonymResource);
+
+    	$synonymCollection = new \SolrRestApiClient\Api\Client\Domain\Synonym\SynonymCollection();
+
+    	$synonym = new \SolrRestApiClient\Api\Client\Domain\Synonym\Synonym();
+    	$synonym->setMainWord("one");
+    	$synonym->addWordsWithSameMeaning("one#one");
+    	$synonym->addWordsWithSameMeaning("one#two");
+    	$synonymCollection->add($synonym);
+
+    	$synonymRepository->addAll($synonymCollection);
+    }
+::
+
+
+
 
 
 

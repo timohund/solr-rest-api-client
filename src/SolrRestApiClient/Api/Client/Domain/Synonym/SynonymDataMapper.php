@@ -3,7 +3,6 @@
 namespace SolrRestApiClient\Api\Client\Domain\Synonym;
 
 use SolrRestApiClient\Api\Client\Domain\JsonDataMapperInterface;
-use SolrRestApiClient\Api\Client\Domain\Synonym\SynonymCollection;
 
 /**
  * Class SynonymDataMapper
