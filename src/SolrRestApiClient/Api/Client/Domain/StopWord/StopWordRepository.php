@@ -57,6 +57,7 @@ class StopWordRepository extends AbstractTaggedResourceRepository {
 		return $this->dataMapper->fromJson($result);
 	}
 
+
 	/**
 	 * @param string $forceResourceTag
 	 * @return bool

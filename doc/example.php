@@ -3,10 +3,11 @@
 require '../vendor/autoload.php';
 
 $factory                    = new \SolrRestApiClient\Common\Factory();
-$managedResourceRepository  = $factory->getManagedResourceRepository('localhost',8080,'solr/<corename/collectionname>/');
+$managedResourceRepository  = $factory->getManagedResourceRepository('localhost',8080,'solr/<collection/corename>/');
 $resources                  = $managedResourceRepository->getAll();
 
-$synonymRepository          = $factory->getSynonymRepository('localhost',8080,'solr/<corename/collectionname>/');
+$synonymRepository          = $factory->getSynonymRepository('localhost',8080,'solr/<collection/corename>/');
+$stopWordRepository         = $factory->getStopWordRepository('localhost',8080,'solr/<collection/corename>/');
 
 foreach($resources->getSynonymResources() as $resource) {
 	$synonymRepository->setResource($resource);
@@ -28,10 +29,21 @@ foreach($resources->getSynonymResources() as $resource) {
 	$synonymRepository->addAll($synonymCollection);
 	$synonymRepository->deleteByMainWord("one");
 
-	var_dump($synonymRepository->getAll());
-
 	$synonymRepository->deleteAll();
 
-	var_dump($synonymRepository->getAll());
+
+	$stopWord = new \SolrRestApiClient\Api\Client\Domain\StopWord\StopWord();
+	$stopWord->setWord("Arsch");
+
+	$stopWordCollection = new \SolrRestApiClient\Api\Client\Domain\StopWord\StopWordCollection();
+	$stopWordCollection->add($stopWord);
+
+	$stopWordRepository->setResource($resource);
+	$stopWordRepository->addAll($stopWordCollection);
+
+	$allStopWords = $stopWordRepository->getAll();
+
+	var_dump($allStopWords->getCount());
+
 }
 

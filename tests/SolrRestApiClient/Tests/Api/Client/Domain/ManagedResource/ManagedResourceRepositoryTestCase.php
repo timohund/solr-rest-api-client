@@ -4,6 +4,7 @@ namespace SolrRestApiClient\Tests\Api\Client\Domain\Synonym;
 
 use SolrRestApiClient\Api\Client\Domain\ManagedResource\ManagedResourceRepository;
 use SolrRestApiClient\Api\Client\Domain\ManagedResource\ManagedResourceDataMapper;
+use SolrRestApiClient\Api\Client\Domain\ManagedResource\ManagedResourceCollection;
 use SolrRestApiClient\Tests\BaseTestCase;
 
 /**
@@ -53,8 +54,11 @@ class ManagedResourceRepositoryTestCase extends BaseTestCase {
 			$this->returnValue($responseMock)
 		);
 
+		/**
+		 * @var $managedResponse ManagedResourceCollection
+		 */
 		$managedResponse = $mockedManagedResourceRepository->getAll();
 		$this->assertInstanceOf('SolrRestApiClient\Api\Client\Domain\ManagedResource\ManagedResourceCollection', $managedResponse);
-		$this->assertEquals(2, $managedResponse->getCount(),'Unexpected amount of managed resources retrieved');
+		$this->assertEquals(2, $managedResponse->getSynonymResources()->getCount(),'Unexpected amount of managed resources retrieved');
 	}
 }
