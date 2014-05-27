@@ -52,6 +52,27 @@ class Factory {
 	}
 
 	/**
+	 * @param string $hostname
+	 * @param int $port
+	 * @param string $corePath
+	 * @return \SolrRestApiClient\Api\Client\Domain\StopWord\StopWordRepository
+	 */
+	public static function getStopWordRepository($hostname = 'localhost', $port = 8080, $corePath = 'solr/') {
+		$guzzle             = self::getPreparedGuzzleClient();
+		$dataMapper         = new \SolrRestApiClient\Api\Client\Domain\StopWord\StopWordDataMapper();
+
+		$stopwordRepository  = new \SolrRestApiClient\Api\Client\Domain\StopWord\StopWordRepository();
+		$stopwordRepository->setHostName($hostname);
+		$stopwordRepository->setPort($port);
+		$stopwordRepository->setCorePath($corePath);
+		$stopwordRepository->injectRestClient($guzzle);
+		$stopwordRepository->injectDataMapper($dataMapper);
+		$stopwordRepository->setRestClientBaseUrl();
+
+		return $stopwordRepository;
+	}
+
+	/**
 	 * @return \Guzzle\Http\Client
 	 * @throws Exception\RuntimeException
 	 */
