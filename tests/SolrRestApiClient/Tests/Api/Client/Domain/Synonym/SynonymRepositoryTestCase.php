@@ -150,7 +150,36 @@ class SynonymRepositoryTestCase extends BaseTestCase {
 	 * @test
 	 */
 	public function canDeleteAll() {
-		$this->markTestIncomplete("todo");
+		$synonymsCount = 5;
+		$synonymCollection = new \SolrRestApiClient\Api\Client\Domain\Synonym\SynonymCollection();
+
+		for($i = 0; $i < $synonymsCount; $i++) {
+			$synonym = new \SolrRestApiClient\Api\Client\Domain\Synonym\Synonym();
+			$synonym->setMainWord('foo');
+			$synonym->addWordsWithSameMeaning('bar');
+			$synonym->addWordsWithSameMeaning('bla');
+			$synonym->addWordsWithSameMeaning('bluqqqqqqqqqqq');
+
+			$synonymCollection->add($synonym);
+		}
+
+		$this->synonymRepository = $this->getMock('SolrRestApiClient\Api\Client\Domain\Synonym\SynonymRepository',array('executeDeleteRequest','executeGetRequest','executePostRequest', 'getAll', 'getTag'));
+		$this->synonymRepository->injectDataMapper($this->dataMapper);
+
+		$this->synonymRepository->expects($this->once())->method('getTag');
+		$this->synonymRepository->expects($this->once())->method('getAll')->will($this->returnValue(
+			$synonymCollection
+		));
+
+		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody','getStatusCode'), array(),'',false);
+		$responseMock->expects($this->exactly($synonymsCount))->method('getStatusCode')->will($this->returnValue(200));
+
+		$endpoint = 'solr/schema/analysis/synonyms//foo';
+		$this->synonymRepository->expects($this->exactly($synonymsCount))->method('executeDeleteRequest')->with($endpoint)->will($this->returnValue(
+			$responseMock
+		));
+
+		$this->assertTrue($this->synonymRepository->deleteAll());
 	}
 
 }
