@@ -76,7 +76,7 @@ class SynonymRepository extends AbstractTaggedResourceRepository {
 	}
 
 	/**
-	 * @param $forceResourceTag
+	 * @param string $forceResourceTag
 	 * @return bool
 	 * @throws \Exception
 	 */

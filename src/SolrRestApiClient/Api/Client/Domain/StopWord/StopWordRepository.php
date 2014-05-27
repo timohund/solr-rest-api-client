@@ -7,6 +7,7 @@ use SolrRestApiClient\Api\Client\Domain\AbstractTaggedResourceRepository;
 
 /**
  * Repository to handle StopWord in solr using the RestAPI
+ * @package SolrRestApiClient\Api\Client\Domain\StopWord
  *
  * @author Timo Schmidt <timo.schmidt@aoe.com>
  */
@@ -82,5 +83,22 @@ class StopWordRepository extends AbstractTaggedResourceRepository {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * @param string $word
+	 * @param string $forceResourceTag
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function deleteByWord($word, $forceResourceTag = null) {
+		try {
+			$resourceTag    = $this->getTag($forceResourceTag);
+			$endpoint       = $this->getEndpoint(array($resourceTag, $word));
+			$this->executeDeleteRequest($endpoint);
+			return true;
+		} catch(\Exception $e) {
+			throw new \Exception($e->getMessage() . " cant delete stopword");
+		}
 	}
 }
