@@ -1092,13 +1092,13 @@
 				"name": "*_tws",
 				"type": "text_ws",
 				"indexed": true,
-				"stored": true
+				"stored": false
 			},
 			{
 				"name": "*_dt",
 				"type": "date",
 				"indexed": true,
-				"stored": true
+				"stored": false
 			},
 			{
 				"name": "*_sm",

@@ -38,7 +38,7 @@ abstract class AbstractField {
 	/**
 	 * @return boolean
 	 */
-	public function isIsIndexed() {
+	public function getIsIndexed() {
 		return $this->isIndexed;
 	}
 
@@ -52,7 +52,7 @@ abstract class AbstractField {
 	/**
 	 * @return boolean
 	 */
-	public function isIsMultiValued() {
+	public function getIsMultiValued() {
 		return $this->isMultiValued;
 	}
 
@@ -66,7 +66,7 @@ abstract class AbstractField {
 	/**
 	 * @return boolean
 	 */
-	public function isIsStored() {
+	public function getIsStored() {
 		return $this->isStored;
 	}
 
