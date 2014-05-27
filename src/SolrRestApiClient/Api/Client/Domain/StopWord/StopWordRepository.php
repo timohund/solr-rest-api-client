@@ -26,7 +26,7 @@ class StopWordRepository extends AbstractTaggedResourceRepository {
 
 	/**
 	 * @param StopWordCollection $stopWords
-	 * @param $forceResourceTag
+	 * @param string $forceResourceTag
 	 * @return bool
 	 */
 	public function addAll(StopWordCollection $stopWords, $forceResourceTag = null) {
@@ -39,7 +39,7 @@ class StopWordRepository extends AbstractTaggedResourceRepository {
 	}
 
 	/**
-	 * @param $forceResourceTag
+	 * @param string $forceResourceTag
 	 * @return StopWordCollection
 	 */
 	public function getAll($forceResourceTag = null) {
@@ -55,5 +55,31 @@ class StopWordRepository extends AbstractTaggedResourceRepository {
 		}
 
 		return $this->dataMapper->fromJson($result);
+	}
+
+	/**
+	 * @param string $forceResourceTag
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function deleteAll($forceResourceTag = null) {
+		$result                 = array();
+		$resourceTag            = $this->getTag($forceResourceTag);
+		$stopwordCollection     = $this->getAll($resourceTag);
+
+		foreach($stopwordCollection->toArray() as $stopwordObject) {
+			$result[] = $stopwordObject->getWord();
+		}
+
+		if(count($result) > 0) {
+			foreach($result as $word) {
+				$endpoint = $this->getEndpoint(array($resourceTag, $word));
+				$response = $this->executeDeleteRequest($endpoint);
+				if($response->getStatusCode() != 200 ) {
+					throw new \Exception($word . " do not exists.");
+				}
+			}
+		}
+		return true;
 	}
 }

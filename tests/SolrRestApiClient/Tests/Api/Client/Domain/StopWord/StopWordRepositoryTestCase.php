@@ -98,4 +98,37 @@ class StopWordRepositoryTestCase extends BaseTestCase {
 		$this->assertInstanceOf('SolrRestApiClient\Api\Client\Domain\StopWord\StopWordCollection', $stopwordAll);
 		$this->assertEquals(3, $stopwordAll->getCount(),'Unexpected amount of stopwords retrieved');
 	}
+
+	/**
+	 * @test
+	 */
+	public function canDeleteAllStopWords() {
+		$stopwordsCount = 5;
+		$stopwordCollection = new StopWordCollection();
+
+		for($i = 0; $i < $stopwordsCount; $i++) {
+			$synonym = new StopWord();
+			$synonym->setWord('foo');
+
+			$stopwordCollection->add($synonym);
+		}
+
+		$this->synonymRepository = $this->getMock('SolrRestApiClient\Api\Client\Domain\StopWord\StopWordRepository',array('executeDeleteRequest','executeGetRequest','executePostRequest', 'getAll', 'getTag'));
+		$this->synonymRepository->injectDataMapper($this->dataMapper);
+
+		$this->synonymRepository->expects($this->once())->method('getTag');
+		$this->synonymRepository->expects($this->once())->method('getAll')->will($this->returnValue(
+			$stopwordCollection
+		));
+
+		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody','getStatusCode'), array(),'',false);
+		$responseMock->expects($this->exactly($stopwordsCount))->method('getStatusCode')->will($this->returnValue(200));
+
+		$endpoint = 'solr/schema/analysis/stopwords//foo';
+		$this->synonymRepository->expects($this->exactly($stopwordsCount))->method('executeDeleteRequest')->with($endpoint)->will($this->returnValue(
+			$responseMock
+		));
+
+		$this->assertTrue($this->synonymRepository->deleteAll());
+	}
 }
