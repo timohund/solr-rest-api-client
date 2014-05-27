@@ -3,6 +3,7 @@
 namespace SolrRestApiClient\Api\Client\Domain\ManagedResource;
 
 use SolrRestApiClient\Api\Client\Domain\JsonDataMapperInterface;
+use SolrRestApiClient\Api\Client\Domain\StopWord\StopWord;
 
 /**
  * Class ManagedResourcesDataMapper
@@ -30,6 +31,15 @@ class ManagedResourceDataMapper implements JsonDataMapperInterface {
 				$synonymResource->setTag($matches[1]);
 
 				$resourceCollection->add($synonymResource);
+			}
+
+			if (preg_match('/stopwords/', $resources->resourceId)) {
+				$matches = preg_split('/stopwords\\//', $resources->resourceId);
+
+				$stopWordResource = new StopWordResource();
+				$stopWordResource->setTag($matches[1]);
+
+				$resourceCollection->add($stopWordResource);
 			}
 
 		}

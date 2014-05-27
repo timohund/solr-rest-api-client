@@ -3,6 +3,7 @@
 namespace SolrRestApiClient\Api\Client\Domain\ManagedResource;
 
 use SolrRestApiClient\Api\Client\Domain\AbstractCollection;
+use SolrRestApiClient\Api\Client\Domain\StopWord\StopWord;
 
 /**
  * Class ManagedResourceCollection
@@ -35,6 +36,21 @@ class ManagedResourceCollection extends AbstractCollection {
 
 		foreach($this->data as $item) {
 			if($item instanceof SynonymResource) {
+				$result->add($item);
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @return ManagedResourceCollection
+	 */
+	public function getStopWordResources() {
+		$result = new ManagedResourceCollection();
+
+		foreach($this->data as $item) {
+			if($item instanceof StopWordResource) {
 				$result->add($item);
 			}
 		}
