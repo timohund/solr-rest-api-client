@@ -8,4 +8,4 @@ namespace SolrRestApiClient\Api\Client\Domain\Schema\Field;
  * @author Timo Schmidt <timo.schmidt@gmx.net>
  * @package SolrRestApiClient\Api\Client\Domain\Schema\Field
  */
-class StaticField {}
+class StaticField extends AbstractField {}
