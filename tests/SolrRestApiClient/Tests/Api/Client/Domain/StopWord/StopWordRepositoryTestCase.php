@@ -113,11 +113,11 @@ class StopWordRepositoryTestCase extends BaseTestCase {
 			$stopwordCollection->add($synonym);
 		}
 
-		$this->synonymRepository = $this->getMock('SolrRestApiClient\Api\Client\Domain\StopWord\StopWordRepository',array('executeDeleteRequest','executeGetRequest','executePostRequest', 'getAll', 'getTag'));
-		$this->synonymRepository->injectDataMapper($this->dataMapper);
+		$this->stopwordRepository = $this->getMock('SolrRestApiClient\Api\Client\Domain\StopWord\StopWordRepository',array('executeDeleteRequest','executeGetRequest','executePostRequest', 'getAll', 'getTag'));
+		$this->stopwordRepository->injectDataMapper($this->dataMapper);
 
-		$this->synonymRepository->expects($this->once())->method('getTag');
-		$this->synonymRepository->expects($this->once())->method('getAll')->will($this->returnValue(
+		$this->stopwordRepository->expects($this->once())->method('getTag');
+		$this->stopwordRepository->expects($this->once())->method('getAll')->will($this->returnValue(
 			$stopwordCollection
 		));
 
@@ -125,10 +125,21 @@ class StopWordRepositoryTestCase extends BaseTestCase {
 		$responseMock->expects($this->exactly($stopwordsCount))->method('getStatusCode')->will($this->returnValue(200));
 
 		$endpoint = 'solr/schema/analysis/stopwords//foo';
-		$this->synonymRepository->expects($this->exactly($stopwordsCount))->method('executeDeleteRequest')->with($endpoint)->will($this->returnValue(
+		$this->stopwordRepository->expects($this->exactly($stopwordsCount))->method('executeDeleteRequest')->with($endpoint)->will($this->returnValue(
 			$responseMock
 		));
 
-		$this->assertTrue($this->synonymRepository->deleteAll());
+		$this->assertTrue($this->stopwordRepository->deleteAll());
+	}
+
+	/**
+	 * @test
+	 */
+	public function canDeleteByWord() {
+		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody'), array(),'',false);
+		$this->stopwordRepository->expects($this->once())->method('executeDeleteRequest')->with('solr/schema/analysis/stopwords/it/test')->will(
+			$this->returnValue($responseMock)
+		);
+		$this->stopwordRepository->deleteByWord('test',"it");
 	}
 }
