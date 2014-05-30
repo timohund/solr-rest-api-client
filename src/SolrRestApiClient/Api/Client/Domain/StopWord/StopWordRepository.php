@@ -81,6 +81,7 @@ class StopWordRepository extends AbstractTaggedResourceRepository {
 			if($response->getStatusCode() == 200) {
 				$stopWord = new StopWord();
 				$stopWord->setWord($word);
+				$stopWord->setTag($resourceTag);
 
 				$stopwordCollection->add($stopWord);
 			}
