@@ -82,12 +82,13 @@ The following example shows how you can use the api client to manage stopwords w
     $stopword = new \SolrRestApiClient\Api\Client\Domain\StopWord\StopWord();
     $stopword->setWord('foo');
 
-    $stopwordCollection->add($synonym);
+    $stopwordCollection->add($stopword);
 
     $result = $repository->addAll($stopwordCollection, 'french');
 ::
 
 In addition to addAll method some other methods exist in repository like:
+
 - getAll;
 - getByWord;
 - deleteAll;
