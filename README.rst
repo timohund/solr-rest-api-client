@@ -54,6 +54,46 @@ The following example shows how you can used the api client to manage synonyms w
     $result = $repository->addAll($synonymCollection,'mytag');
 ::
 
+Stopwords
+======================
+
+In solr you can configure a "managed" stopwords with the following entry in your schema.xml:
+
+::
+
+     <filter class="solr.ManagedStopFilterFactory" managed="french" />
+::
+
+When you have defined a managed stopwords list as described below you can see it in the list of the manged
+resources (e.g.: http://localhost:8080/<core/collectionpath>/schema/managed) and manage it with the solr rest api
+
+
+The following example shows how you can use the api client to manage stopwords with a certain tag:
+
+::
+
+    require '<vendorDir>/vendor/autoload.php';
+
+    $factory = new \SolrRestApiClient\Common\Factory();
+    $repository = $factory->getStopWordRepository('localhost',8080,'solr/<yourcore>/');
+
+    $stopwordCollection = new \SolrRestApiClient\Api\Client\Domain\StopWord\StopWordCollection();
+
+    $stopword = new \SolrRestApiClient\Api\Client\Domain\StopWord\StopWord();
+    $stopword->setWord('foo');
+
+    $stopwordCollection->add($synonym);
+
+    $result = $repository->addAll($stopwordCollection, 'french');
+::
+
+In addition to addAll method some other methods exist in repository like:
+- getAll;
+- getByWord;
+- deleteAll;
+- deleteByWord;
+
+
 Managed Resources
 ======================
 
@@ -90,8 +130,6 @@ to all of them:
     	$synonymRepository->addAll($synonymCollection);
     }
 
-
-Status
 
 .. |buildStatusIcon| image:: https://secure.travis-ci.org/timoschmidt/solr-rest-api-client.png?branch=master
    :alt: Build Status
