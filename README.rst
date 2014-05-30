@@ -8,9 +8,15 @@ Solr RESTApi Client
 :Homepage: http://www.searchperience.com/
 :Build status: |buildStatusIcon|
 
-Solr client basics
+Foreword
 ========================
 
+With appearance of SOLR [Managed Resources](https://cwiki.apache.org/confluence/display/solr/Managed+Resources) feature,
+our intention was to implement tiny and easy to use PHP API client to communicate to SOLR REST API interface.
+
+
+Solr client basics
+========================
 
 The solr rest api client can be used to manage the following solr entities with the solr rest api:
 
