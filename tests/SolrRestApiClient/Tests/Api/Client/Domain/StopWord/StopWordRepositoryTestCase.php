@@ -142,4 +142,45 @@ class StopWordRepositoryTestCase extends BaseTestCase {
 		);
 		$this->stopwordRepository->deleteByWord('test',"it");
 	}
+
+	/**
+	 * @test
+	 */
+	public function canGetByWord() {
+		$stopwordCollection = new StopWordCollection();
+		$stopword = new StopWord();
+		$stopword->setWord('foo');
+		$stopwordCollection->add($stopword);
+
+		$expectedJson = '["foo"]';
+		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody','getStatusCode'), array(),'',false);
+		$responseMock->expects($this->exactly(2))->method('getStatusCode')->will($this->returnValue(200));
+		$this->stopwordRepository->expects($this->once())->method('executePostRequest')->with('solr/schema/analysis/stopwords/it',$expectedJson)->will(
+			$this->returnValue($responseMock)
+		);
+
+		$response = $this->stopwordRepository->addAll($stopwordCollection, 'it');
+		$this->assertTrue($response);
+
+
+		$this->stopwordRepository->expects($this->once())->method('executeGetRequest')->with('solr/schema/analysis/stopwords/default/foo')->will(
+			$this->returnValue($responseMock)
+		);
+		$foundedWord = $this->stopwordRepository->getByWord('foo');
+		$this->assertEquals('foo', $foundedWord->getByIndex(0)->getWord(), "Word not found");
+	}
+
+	/**
+	 * @test
+	 */
+	public function canGetNotExistingWord() {
+		$responseMock = $this->getMock('Guzzle\Http\Message\Response',array('getBody','getStatusCode'), array(),'',false);
+		$responseMock->expects($this->once())->method('getStatusCode')->will($this->returnValue(404));
+
+		$this->stopwordRepository->expects($this->once())->method('executeGetRequest')->with('solr/schema/analysis/stopwords/default/foo')->will(
+			$this->returnValue($responseMock)
+		);
+		$foundedWord = $this->stopwordRepository->getByWord('foo');
+		$this->assertEquals(0, $foundedWord->getCount(), "Word should not exist");
+	}
 }

@@ -58,6 +58,41 @@ class StopWordRepository extends AbstractTaggedResourceRepository {
 		return $this->dataMapper->fromJson($result);
 	}
 
+	/**
+	 * Test to see if a specific word exists
+	 *
+	 * @param string $word
+	 * @param string $forceResourceTag
+	 * @return StopWordCollection
+	 */
+	public function getByWord($word = '', $forceResourceTag = null) {
+		$stopwordCollection = new StopWordCollection();
+
+		try {
+			$resourceTag    = $this->getTag($forceResourceTag);
+			$endpoint       = $this->getEndpoint(array($resourceTag));
+
+			if(trim($word) != '') {
+				$endpoint = $endpoint . '/' .$word;
+			}
+
+			$response = $this->executeGetRequest($endpoint);
+
+			if($response->getStatusCode() == 200) {
+				$stopWord = new StopWord();
+				$stopWord->setWord($word);
+				$stopWord->setTag($resourceTag);
+
+				$stopwordCollection->add($stopWord);
+			}
+		} catch (\Guzzle\Http\Exception\BadResponseException $e) {
+			if($e->getResponse()->getStatusCode() === 404) {
+				return $stopwordCollection;
+			}
+		}
+
+		return $stopwordCollection;
+	}
 
 	/**
 	 * @param string $forceResourceTag
