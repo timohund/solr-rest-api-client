@@ -39,13 +39,14 @@ class SynonymRepository extends AbstractTaggedResourceRepository {
 
 	/**
 	 * @param $forceResourceTag
+	 * @param array $options
 	 * @return SynonymCollection
 	 */
-	public function getAll($forceResourceTag = null) {
+	public function getAll($forceResourceTag = null, $options = array()) {
 		try {
 			$resourceTag    = $this->getTag($forceResourceTag);
 			$endpoint       = $this->getEndpoint(array($resourceTag));
-			$response       = $this->executeGetRequest($endpoint);
+			$response       = $this->executeGetRequest($endpoint, $options);
 			$result         = $response->getBody(true);
 		} catch ( \Guzzle\Http\Exception\BadResponseException $e) {
 			if($e->getResponse()->getStatusCode() === 404) {
