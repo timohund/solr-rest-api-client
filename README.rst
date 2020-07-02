@@ -1,7 +1,3 @@
-++++++++++++++++++++++++++++++++++
-Forked Version of https://github.com/timohund/solr-rest-api-client
-++++++++++++++++++++++++++++++++++
-
 ++++++++++++++++++++++++
 Solr RESTApi Client
 ++++++++++++++++++++++++
